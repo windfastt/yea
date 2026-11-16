@@ -86,7 +86,19 @@ function a0_0x40a08e() {
         'fill': _0x1f6b60(0x18f)
     }),
     a0_0x1ddb21 = this[_0x1f6b60(0x1b8)][_0x1f6b60(0x1ac)][_0x1f6b60(0x17d)],
-    this[_0x1f6b60(0x1b8)][_0x1f6b60(0x191)][_0x1f6b60(0x1ad)](a0_0x4a1a6b, a0_0x44305a, a0_0x1733f5, null, this),
+        this.physics.add.overlap(
+        a0_0x4a1a6b,
+        a0_0x44305a,
+        () => {
+            if (window.__mouseDashDeathArmed && a0_0x213d77 >= 10067) {
+                window.__mouseDashDeathArmed = false;
+                a0_0x1733f5();
+            }
+        },
+        null,
+        this
+    ),
+
     this[_0x1f6b60(0x1a7)]['on'](_0x1f6b60(0x199), _0x2224ef => {
         a0_0x4a1a6b['x'] = _0x2224ef['x'],
         a0_0x4a1a6b['y'] = _0x2224ef['y'];
@@ -102,7 +114,8 @@ function a0_0x40a08e() {
 }
 function a0_0xbf1dc9(_0x13ae66, _0x53dd2d) {
     const _0x459a9a = a0_0x1b3949;
-    a0_0x341933 === 0x1 && (a0_0x213d77 += _0x53dd2d / 0x3e8),
+    a0_0x341933 === 0x1 && a0_0x213d77 < 10067 &&
+    (a0_0x213d77 = Math.min(10067, a0_0x213d77 + _0x53dd2d / 0x3e8)),
     a0_0x157e16[_0x459a9a(0x1c5)](_0x459a9a(0x1a3) + a0_0x213d77['toFixed'](0x1)),
     a0_0x44305a[_0x459a9a(0x18c)]()['forEach']( (_0x496828, _0x354262) => {
         const _0x82288a = _0x459a9a;
@@ -309,3 +322,33 @@ window.submitGameScore = async (value = 10067) => {
     // the high score check, opens the message dialog, and calls endGame.
     await a0_0x1733f5();
 };
+window.__mouseDashDeathArmed = false;
+
+window.addEventListener("keydown", event => {
+    if (event.code !== "KeyT" || event.repeat) {
+        return;
+    }
+
+    if (a0_0x341933 !== 1) {
+        console.log("Start a run first.");
+        return;
+    }
+
+    if (a0_0x213d77 < 10067) {
+        console.log("Current score: " + a0_0x213d77.toFixed(1));
+        console.log("Keep playing until the score reaches 10067.0.");
+        return;
+    }
+
+    window.__mouseDashDeathArmed = true;
+
+    // Move the player onto a real gray ball. The physics overlap above
+    // then performs the death through the original game handler.
+    const ball = a0_0x44305a.getChildren()[0];
+
+    if (ball) {
+        a0_0x4a1a6b.body.reset(ball.x, ball.y);
+    }
+});
+
+console.log("Invincibility loaded. Reach 10067.0, then press T.");
